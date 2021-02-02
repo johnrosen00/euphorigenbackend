@@ -2,7 +2,7 @@
 
 ## Currently Implemented
 
-- Handles sessions
+- Handles sessions (Stripped down reimplementation of 441 hw)
 
 ## Critical TODO:
 
