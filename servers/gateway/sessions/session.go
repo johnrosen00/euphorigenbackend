@@ -89,7 +89,7 @@ func GetSessionID(r *http.Request, signingKey string) (SessionID, error) {
 //gets the associated state from the provided store into
 //the `sessionState` parameter, and returns the SessionID
 func GetState(r *http.Request, signingKey string, store Store, sessionState interface{}) (SessionID, error) {
-	//TODO: get the SessionID from the request, and get the data
+	// get the SessionID from the request, and get the data
 	//associated with that SessionID from the store.
 	if len(signingKey) == 0 {
 		return InvalidSessionID, errors.New("invalidSigningKey")
