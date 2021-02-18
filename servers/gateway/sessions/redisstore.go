@@ -1,6 +1,7 @@
 package sessions
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"time"
@@ -8,10 +9,19 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+//RedisStore represents a session.Store backed by redis.
+type RedisStore struct {
+	//Redis client used to talk to redis server.
+	Client *redis.Client
+	//Used for key expiry time on redis.
+	SessionDuration time.Duration
+	Context         context.Context
+}
+
 //NewRedisStore constructs a new RedisStore
-func NewRedisStore(client *redis.Client, sessionDuration time.Duration) *RedisStore {
+func NewRedisStore(ctx context.Context, client *redis.Client, sessionDuration time.Duration) *RedisStore {
 	//initialize and return a new RedisStore struct
-	return &RedisStore{client, sessionDuration}
+	return &RedisStore{client, sessionDuration, ctx}
 }
 
 //Store implementation
@@ -30,7 +40,7 @@ func (rs *RedisStore) Save(sid SessionID, sessionState interface{}) error {
 	}
 
 	sidKey := sid.getRedisKey()
-	rs.Client.Set(sidKey, j, rs.SessionDuration)
+	rs.Client.Set(rs.Context, sidKey, j, rs.SessionDuration)
 	return nil
 }
 
@@ -44,7 +54,7 @@ func (rs *RedisStore) Get(sid SessionID, sessionState interface{}) error {
 
 	sidKey := sid.getRedisKey()
 
-	v := rs.Client.Get(sidKey)
+	v := rs.Client.Get(rs.Context, sidKey)
 
 	if v.Err() != nil {
 		return ErrStateNotFound
@@ -56,7 +66,7 @@ func (rs *RedisStore) Get(sid SessionID, sessionState interface{}) error {
 	}
 
 	err1 := json.Unmarshal(vB, sessionState)
-	rs.Client.Set(sidKey, rs.Client.Get(sidKey), rs.SessionDuration)
+	rs.Client.Set(rs.Context, sidKey, rs.Client.Get(rs.Context, sidKey), rs.SessionDuration)
 
 	return err1
 }
@@ -65,7 +75,7 @@ func (rs *RedisStore) Get(sid SessionID, sessionState interface{}) error {
 func (rs *RedisStore) Delete(sid SessionID) error {
 	sidKey := sid.getRedisKey()
 
-	if ret := rs.Client.Del(sidKey).Err(); ret != nil {
+	if ret := rs.Client.Del(rs.Context, sidKey).Err(); ret != nil {
 		return ErrStateNotFound
 	}
 

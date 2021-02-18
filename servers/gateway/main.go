@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"euphorigenbackend/servers/gateway/handlers"
@@ -11,6 +12,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 //main is the main entry point for the server
@@ -34,13 +37,13 @@ func main() {
 	userStore := &users.MySQLStore{}
 
 	sessionStore.SessionDuration, _ = time.ParseDuration("7m")
-
+	nctx := context.Background()
 	sessionStore.Client = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-
+	sessionStore.Context = nctx
 	err := errors.New("")
 
 	//TODO: Handle errors better here. Unsure how to do so.
