@@ -4,15 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
-)
 
-//RedisStore represents a session.Store backed by redis.
-type RedisStore struct {
-	//Redis client used to talk to redis server.
-	Client *redis.Client
-	//Used for key expiry time on redis.
-	SessionDuration time.Duration
-}
+	"github.com/go-redis/redis/v8"
+)
 
 //NewRedisStore constructs a new RedisStore
 func NewRedisStore(client *redis.Client, sessionDuration time.Duration) *RedisStore {

@@ -47,7 +47,7 @@ func BeginSession(signingKey string, store Store, sessionState interface{}, w ht
 
 //GetSessionID extracts and validates the SessionID from the request headers
 func GetSessionID(r *http.Request, signingKey string) (SessionID, error) {
-	//TODO: get the value of the Authorization header,
+	//get the value of the Authorization header,
 	//or the "auth" query string parameter if no Authorization header is present,
 	//and validate it. If it's valid, return the SessionID. If not
 	//return the validation error.
