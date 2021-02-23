@@ -1,14 +1,10 @@
-create table if not exists users (
-    passhash binary(72) not null
-);
-
-create table if not exists management (
-    passhash binary(72) not null,
-    ntpasshash binary(72) not null
+create table if not exists passwords (
+    tpass varchar(255) not null,
+    ntpass varchar(255) not null
 );
 
 create table if not exists playersession (
-    playersessionid int not null auto_increment primary key,
+    playerid int not null auto_increment primary key,
     lastpuzzleid int not null
 );
 
