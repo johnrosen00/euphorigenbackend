@@ -10,6 +10,19 @@ type PlayerStore struct {
 	DB *sql.DB
 }
 
+//Validate determines whether id exists within database
+func (store *PlayerStore) Validate(id int64) error {
+	q := "select playerid from playersession where playerid = ?"
+	row := store.DB.QueryRow(q, id)
+
+	var v int64
+
+	if err := row.Scan(&v); err != nil {
+		return fmt.Errorf("no such id")
+	}
+	return nil
+}
+
 //Insert creates a new player session
 func (store *PlayerStore) Insert() (int64, error) {
 	q := "insert into playersession(lastpuzzleid) values(?)"

@@ -3,6 +3,7 @@ package gamepass
 //NewPass is used when setting new password
 type NewPass struct {
 	Password string `json:"Password"`
+	Track    bool   `json:"Track"`
 }
 
 //PlayerLogin is used when players try to login to an existing session.

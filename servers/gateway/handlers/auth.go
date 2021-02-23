@@ -9,8 +9,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//returns true if current request header = application/json
-func isJSONctype(r *http.Request) bool {
+//IsJSONctype returns true if current request header = application/json
+func IsJSONctype(r *http.Request) bool {
 	return r.Header.Get("Content-Type") == "application/json"
 }
 
@@ -29,7 +29,7 @@ type ReturnID struct {
 //SessionsHandler creates and gets new sesssions. PlayerID of -1 = management login, -2 = no-track
 func (cx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request) {
 
-	if !isJSONctype(r) {
+	if !IsJSONctype(r) {
 		http.Error(w, "Request body must contain JSON.", http.StatusUnsupportedMediaType)
 		return
 	}
