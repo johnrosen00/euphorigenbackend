@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"euphorigenbackend/servers/gateway/models/users"
 	"euphorigenbackend/servers/gateway/sessions"
 )
 
@@ -9,7 +8,7 @@ import (
 type HandlerContext struct {
 	Key          string
 	SessionStore sessions.Store
-	UserStore    users.Store
+	ManPass      []byte
 }
 
 //GameContext is a struct that is used for handlers for the nonmanagement endpoints

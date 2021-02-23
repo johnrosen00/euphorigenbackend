@@ -2,18 +2,15 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"euphorigenbackend/servers/gateway/handlers"
-	"euphorigenbackend/servers/gateway/models/users"
 	"euphorigenbackend/servers/gateway/sessions"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //main is the main entry point for the server
@@ -31,10 +28,13 @@ func main() {
 	//auth api stuff
 	sessionKey := os.Getenv("SESSIONKEY")
 	redisAddr := os.Getenv("REDISADDR")
-	dsn := os.Getenv("DSN")
+	manpass, err := bcrypt.GenerateFromPassword([]byte(os.Getenv("MANPASS")), 13)
+
+	if err != nil {
+		return
+	}
 
 	sessionStore := &sessions.RedisStore{}
-	userStore := &users.MySQLStore{}
 
 	sessionStore.SessionDuration, _ = time.ParseDuration("7m")
 	nctx := context.Background()
@@ -44,26 +44,16 @@ func main() {
 		DB:       0,  // use default DB
 	})
 	sessionStore.Context = nctx
-	err := errors.New("")
-
-	//TODO: Handle errors better here. Unsure how to do so.
-	if userStore.DB, err = sql.Open("mysql", dsn); err != nil {
-		fmt.Printf("error opening database: %v\n", err)
-	}
-
-	defer userStore.DB.Close()
 
 	cx := &handlers.HandlerContext{
 		Key:          sessionKey,
 		SessionStore: sessionStore,
-		UserStore:    userStore,
+		ManPass:      manpass,
 	}
 
 	mux2 := http.NewServeMux()
-	mux2.HandleFunc("/v1/users", cx.UserHandler)
-	mux2.HandleFunc("/v1/users/", cx.SpecificUserHandler)
+
 	mux2.HandleFunc("/v1/sessions", cx.SessionsHandler)
-	mux2.HandleFunc("/v1/sessions/", cx.SpecificSessionsHandler)
 
 	wrappedMux := handlers.NewWrappedCORSHandler(mux2)
 
