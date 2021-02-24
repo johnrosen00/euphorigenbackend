@@ -2,7 +2,6 @@ package metrics
 
 //Store of Metrics
 type Store interface {
-	UpdateTrackable(password string) error
-	UpdateNonTrackable(password string) error
-	Get() ([]*Metric, error)
+	Insert(m *Metric) error
+	Get(mr *MetricRequest) ([]*Metric, error)
 }
