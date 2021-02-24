@@ -8,11 +8,11 @@ create table if not exists playersession (
     lastpuzzleid int not null
 );
 
-create table if not exists events (
-    eventid int not null auto_increment primary key,
-    playersessionid int not null,
+create table if not exists metrics (
+    metricid int not null auto_increment primary key,
+    playerid int not null,
     puzzleid int not null,
-    metrictypeid varchar(255) not null,
     timeinitiated datetime not null,
-    logtext varchar(255)
+    metrictype varchar(255) not null,
+    info varchar(255)
 );
