@@ -49,8 +49,8 @@ func (cx *HandlerContext) GamePassHandler(w http.ResponseWriter, r *http.Request
 			return
 		}
 		ret := &struct {
-			TPassword  string `json:"TPassword"`
-			NTPassword string `json:"NTPassword"`
+			TPassword  string `json:"tpassword"`
+			NTPassword string `json:"ntpassword"`
 		}{
 			t, nt,
 		} //cheeky anonymized struct
