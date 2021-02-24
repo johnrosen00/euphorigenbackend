@@ -3,6 +3,7 @@ package metrics
 import (
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 //MetricStore is just a way to add stuff to the db
@@ -39,23 +40,48 @@ func (store *MetricStore) Get(mr *MetricRequest) ([]*Metric, error) {
 		return nil, err
 	}
 
-	var channelSlice []*Metric
+	var metricSlice []*Metric
 	var m *Metric
-
+	defaultTime := time.Time{}
 	for rows.Next() {
 
 		if err = rows.Scan(&m.MetricID, &m.PlayerID, &m.PuzzleID, &m.TimeInitiated); err != nil {
-			return nil, err89
+			return nil, err
 		}
 
-		currentChannel, err45 := store.GetByID(currentChannelID)
-
-		if err45 != nil {
-			return nil, err45
+		if mr.PlayerID > 0 {
+			if m.PlayerID != mr.PlayerID {
+				continue
+			}
 		}
 
-		channelSlice = append(channelSlice, currentChannel)
+		if mr.BeginTime != defaultTime && mr.EndTime != defaultTime {
+			if m.TimeInitiated.Before(mr.EndTime) && m.TimeInitiated.After(mr.BeginTime) {
+				//do nothing
+			} else {
+				continue
+			}
+		} else if mr.BeginTime != defaultTime {
+			if !m.TimeInitiated.After(mr.BeginTime) {
+				continue
+			}
+
+		} else if mr.EndTime != defaultTime {
+			if !m.TimeInitiated.Before(mr.EndTime) {
+				//do nothing
+			} else {
+				continue
+			}
+		}
+
+		if mr.MetricType != "" {
+			if m.MetricType != mr.MetricType {
+				continue
+			}
+		}
+
+		metricSlice = append(metricSlice, m)
 	}
 
-	return channelSlice, nil
+	return metricSlice, nil
 }
