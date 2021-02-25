@@ -25,6 +25,22 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 
 	if r.Method == "POST" && currentplayerid > 0 {
 		//Post a new metric
+		m := &metrics.Metric{}
+		d := json.NewDecoder(r.Body)
+		if err := d.Decode(m); err != nil {
+			http.Error(w, "Bad JSON body", http.StatusUnsupportedMediaType)
+			return
+		}
+
+		err := cx.MetricStore.Insert(m)
+
+		if err != nil {
+			http.Error(w, "Error with metric params", http.StatusBadRequest)
+			return
+		}
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
 	} else if r.Method == "GET" && currentplayerid == -1 {
 		//Get player metrics based on some params
 
@@ -35,13 +51,20 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		metrics, err := cx.MetricStore.Get(mr)
+		ret, err := cx.MetricStore.Get(mr)
 
 		if err != nil {
 			http.Error(w, "Error with metric params", http.StatusBadRequest)
 			return
 		}
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 
+		enc := json.NewEncoder(w)
+
+		if err := enc.Encode(ret); err != nil {
+			http.Error(w, "Unable to encode to JSON", 404)
+		}
 	} else if r.Method == "PATCH" && currentplayerid > 0 {
 		//get the request body
 		playerupdate := &players.Player{}
@@ -55,6 +78,8 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, "Something went wrong...", http.StatusBadRequest)
 			return
 		}
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 	} else {
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return
