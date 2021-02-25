@@ -1,16 +1,4 @@
-# Euphorigen Backend
+# TODO:
 
-## Currently Implemented
-
-- Handles sessions (Stripped down reimplementation of 441 hw)
-
-## Critical TODO:
-
-- Dockerfiles.
-- Shell scripts to deploy.
-- Set up TLS certs.
-- Debug session handling.
-
-## Important TODO:
-
-- Microservices
+1. DEBUG
+2. DEPLOY

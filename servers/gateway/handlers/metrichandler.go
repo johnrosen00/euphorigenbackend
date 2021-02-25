@@ -32,7 +32,7 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		err := cx.MetricStore.Insert(m)
+		ret, err := cx.MetricStore.Insert(m)
 
 		if err != nil {
 			http.Error(w, "Error with metric params", http.StatusBadRequest)
@@ -40,7 +40,11 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		}
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+		enc := json.NewEncoder(w)
 
+		if err := enc.Encode(ret); err != nil {
+			http.Error(w, "Unable to encode to JSON", 404)
+		}
 	} else if r.Method == "GET" && currentplayerid == -1 {
 		//Get player metrics based on some params
 
