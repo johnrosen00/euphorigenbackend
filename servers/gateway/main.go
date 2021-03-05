@@ -27,8 +27,8 @@ func main() {
 		addr = ":443"
 	}
 
-	tlsKeyPath := os.Getenv("TLSKEY")
-	tlsCertPath := os.Getenv("TLSCERT")
+	//tlsKeyPath := os.Getenv("TLSKEY")
+	//tlsCertPath := os.Getenv("TLSCERT")
 
 	//auth api stuff
 	sessionKey := os.Getenv("SESSIONKEY")
@@ -88,6 +88,7 @@ func main() {
 	mux2.HandleFunc("v1/game/metrics", cx.MetricHandler)
 	wrappedMux := handlers.NewWrappedCORSHandler(mux2)
 
-	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
-
+	//log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
+	//for testing purposes
+	log.Fatal(http.ListenAndServe(addr, wrappedMux))
 }
