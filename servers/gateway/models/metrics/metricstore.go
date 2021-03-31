@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-//MetricStore is just a way to add stuff to the db
+//MetricStore is a wrapper struct to interact with database
 type MetricStore struct {
 	DB *sql.DB
 }
@@ -28,6 +28,7 @@ func (store *MetricStore) Insert(m *Metric) (*Metric, error) {
 		fmt.Printf("error getting new ID: %v\n", id)
 		return nil, err
 	}
+
 	m.MetricID = id
 	return m, nil
 }
