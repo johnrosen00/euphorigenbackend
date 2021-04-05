@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -84,8 +85,9 @@ func main() {
 	mux2 := http.NewServeMux()
 
 	mux2.HandleFunc("/v1/sessions", cx.SessionsHandler)
-	mux2.HandleFunc("v1/game/manage/password", cx.GamePassHandler)
-	mux2.HandleFunc("v1/game/metrics", cx.MetricHandler)
+	mux2.HandleFunc("/v1/game/manage/password", cx.GamePassHandler)
+	mux2.HandleFunc("/v1/game/metrics", cx.MetricHandler)
+	mux2.HandleFunc("/ping", cx.Ping)
 	wrappedMux := handlers.NewWrappedCORSHandler(mux2)
 
 	//log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))

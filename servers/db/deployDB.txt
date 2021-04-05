@@ -1,0 +1,8 @@
+docker build -t johnrosen00/eudb .
+docker push johnrosen00/eudb
+
+
+ssh -oStrictHostKeyChecking=no root@<azure IP>
+docker rm -f eudb
+docker pull johnrosen00/eudb
+docker run -d --net api -e MYSQL_ROOT_PASSWORD="test" -e MYSQL_DATABASE=store --name eudb johnrosen00/eudb
