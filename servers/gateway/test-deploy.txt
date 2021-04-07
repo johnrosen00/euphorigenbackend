@@ -30,3 +30,4 @@ export DSN="root:test@tcp(euDB:3306)/store"
 export SESSIONKEY="bnottomtext"
 
 docker run -d -p 443:443 --net api -v /etc/letsencrypt:/etc/letsencrypt:ro -e REDISADDR=$REDISADDR -e DSN=$DSN -e SESSIONKEY=$SESSIONKEY -e TLSKEY=$TLSKEY -e TLSCERT=$TLSCERT --name eugateway johnrosen00/eugateway
+#docker run -d -p 443:443 --net api -v /etc/letsencrypt:/etc/letsencrypt:ro -e REDISADDR=$REDISADDR -e DSN=$DSN -e SESSIONKEY=$SESSIONKEY -e TLSKEY=$TLSKEY -e TLSCERT=$TLSCERT --name eugateway johnrosen00/eugateway
