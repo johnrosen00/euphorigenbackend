@@ -75,8 +75,12 @@ func (cx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request
 					http.Error(w, "Database Error", http.StatusInternalServerError)
 					return
 				}
-			} else {
+			} else if pwtype == "notrack" {
 				ret.ID = -2
+			} else {
+				w.Header().Add("Content-Type", "application/json")
+				http.Error(w, "Invalid Credentials.", http.StatusUnauthorized)
+				return
 			}
 
 			newSessionState := &SessionState{}

@@ -42,7 +42,7 @@ func main() {
 
 	sessionStore := &sessions.RedisStore{}
 
-	sessionStore.SessionDuration, _ = time.ParseDuration("7m")
+	sessionStore.SessionDuration, _ = time.ParseDuration("60m")
 	nctx := context.Background()
 	sessionStore.Client = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
