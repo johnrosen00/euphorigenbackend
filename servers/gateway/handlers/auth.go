@@ -42,6 +42,7 @@ func (cx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request
 	ret := &ReturnID{}
 	if r.Method == "POST" {
 		newCredentials := &Credentials{}
+
 		d := json.NewDecoder(r.Body)
 
 		if err := d.Decode(newCredentials); err != nil {
@@ -49,8 +50,6 @@ func (cx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request
 			http.Error(w, "invalid credentials", http.StatusUnauthorized)
 			return
 		}
-
-		newSessionState := &SessionState{}
 
 		if newCredentials.Management {
 			if bcrypt.CompareHashAndPassword(cx.ManPass, []byte(newCredentials.Password)) != nil {
@@ -63,6 +62,7 @@ func (cx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request
 			newSessionState.StartTime = time.Now()
 			newSessionState.PlayerSessionID = -1
 			ret.ID = -1
+			sessions.BeginSession(cx.Key, cx.SessionStore, newSessionState, w)
 		} else {
 			pwtype, err := cx.GamePassStore.Compare(newCredentials.Password)
 			if err != nil {
@@ -86,15 +86,8 @@ func (cx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Request
 			newSessionState := &SessionState{}
 			newSessionState.StartTime = time.Now()
 			newSessionState.PlayerSessionID = ret.ID
+			sessions.BeginSession(cx.Key, cx.SessionStore, newSessionState, w)
 		}
-		sessions.BeginSession(cx.Key, cx.SessionStore, newSessionState, w)
-
-		//	response body:
-		//		content-type header = application/json
-		// 		status code http.StatusCreated
-		//		json encoded copy of user's profile
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 	} else if r.Method == "GET" {
 
 		currentSessionState := &SessionState{}

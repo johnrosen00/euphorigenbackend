@@ -64,7 +64,7 @@ func (store *PassStore) Compare(password string) (string, error) {
 //UpdateTrackable updates the trackable password
 func (store *PassStore) UpdateTrackable(password string) error {
 	store.checkState()
-	queryF := "update password set tpass = ?"
+	queryF := "update passwords set tpass = ?"
 
 	if _, err := store.DB.Exec(queryF, password); err != nil {
 		return err
@@ -76,7 +76,7 @@ func (store *PassStore) UpdateTrackable(password string) error {
 //UpdateNonTrackable updates the nontrackable password.
 func (store *PassStore) UpdateNonTrackable(password string) error {
 	store.checkState()
-	queryF := "update password set ntpass = ?"
+	queryF := "update passwords set ntpass = ?"
 
 	if _, err := store.DB.Exec(queryF, password); err != nil {
 		return err

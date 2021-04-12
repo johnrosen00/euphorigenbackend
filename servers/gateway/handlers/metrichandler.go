@@ -6,7 +6,14 @@ import (
 	"euphorigenbackend/servers/gateway/models/players"
 	"euphorigenbackend/servers/gateway/sessions"
 	"net/http"
+	"time"
 )
+
+type NewMetric struct {
+	PuzzleID   int64  `json:"puzzleid"`
+	MetricType string `json:"metrictype"`
+	Info       string `json:"info"`
+}
 
 //MetricHandler handles the storage and retrieval of user metrics:
 //POST
@@ -25,12 +32,22 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 
 	if r.Method == "POST" && currentplayerid > 0 {
 		//Post a new metric
-		m := &metrics.Metric{}
+		nm := &NewMetric{}
+
 		d := json.NewDecoder(r.Body)
-		if err := d.Decode(m); err != nil {
+		if err := d.Decode(nm); err != nil {
 			http.Error(w, "Bad JSON body", http.StatusUnsupportedMediaType)
 			return
 		}
+
+		m := &metrics.Metric{}
+
+		m.Info = nm.Info
+		m.PlayerID = currentplayerid
+		m.MetricType = nm.MetricType
+		m.MetricID = 0
+		m.PuzzleID = nm.PuzzleID
+		m.TimeInitiated = time.Now()
 
 		ret, err := cx.MetricStore.Insert(m)
 

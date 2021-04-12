@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"euphorigenbackend/servers/gateway/models/gamepass"
 	"euphorigenbackend/servers/gateway/sessions"
+	"fmt"
 	"net/http"
 )
 
@@ -20,7 +21,8 @@ func (cx *HandlerContext) GamePassHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	if currentSessionState.PlayerSessionID != -1 {
-		http.Error(w, "Unauthorized user", http.StatusUnauthorized)
+		errmsg := fmt.Sprintf("Unauthorized user.%d", currentSessionState.PlayerSessionID)
+		http.Error(w, errmsg, http.StatusUnauthorized)
 		return
 	}
 
@@ -38,9 +40,13 @@ func (cx *HandlerContext) GamePassHandler(w http.ResponseWriter, r *http.Request
 		}
 
 		if newpass.Track {
-			cx.GamePassStore.UpdateTrackable(newpass.Password)
+			if err := cx.GamePassStore.UpdateTrackable(newpass.Password); err != nil {
+				http.Error(w, "Database error.", http.StatusInternalServerError)
+			}
 		} else {
-			cx.GamePassStore.UpdateNonTrackable(newpass.Password)
+			if err := cx.GamePassStore.UpdateNonTrackable(newpass.Password); err != nil {
+				http.Error(w, "Database error.", http.StatusInternalServerError)
+			}
 		}
 	} else if r.Method == "GET" {
 		t, nt, err := cx.GamePassStore.Get()

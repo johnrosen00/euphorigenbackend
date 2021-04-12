@@ -43,7 +43,7 @@ func main() {
 	sessionStore := &sessions.RedisStore{}
 
 	sessionStore.SessionDuration, _ = time.ParseDuration("60m")
-	nctx := context.Background()
+	nctx := context.TODO()
 	sessionStore.Client = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: "", // no password set
@@ -87,7 +87,6 @@ func main() {
 	mux2.HandleFunc("/v1/sessions", cx.SessionsHandler)
 	mux2.HandleFunc("/v1/game/manage/password", cx.GamePassHandler)
 	mux2.HandleFunc("/v1/game/metrics", cx.MetricHandler)
-	mux2.HandleFunc("/ping", cx.Ping)
 	wrappedMux := handlers.NewWrappedCORSHandler(mux2)
 
 	//log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
