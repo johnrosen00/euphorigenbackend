@@ -12,8 +12,8 @@ docker pull johnrosen00/eugateway
 
 
 
-export TLSKEY="/etc/letsencrypt/live/api.johnrosen.me/privkey.pem"
-export TLSCERT="/etc/letsencrypt/live/api.johnrosen.me/fullchain.pem"
+export TLSKEY="/usr/local/ssl/certs/api.lab.cip.uw.edu.key"
+export TLSCERT="/usr/local/ssl/certs/api.lab.cip.uw.edu.crt"
 
 
 export REDISADDR="redisServer:6379"
@@ -28,5 +28,6 @@ docker run -d -p 443:443 --net api \
 -e SESSIONKEY=$SESSIONKEY \
 -e TLSKEY=$TLSKEY \
 -e TLSCERT=$TLSCERT \
+-v /usr/local/ssl/:/usr/local/ssl/:ro \
 --name "eugateway" \
 johnrosen00/eugateway
