@@ -41,7 +41,7 @@ func (store *PassStore) checkState() {
 //returns "track", "notrack"
 func (store *PassStore) Compare(password string) (string, error) {
 	ret := ""
-	store.checkState()
+
 	q := "select tpass, ntpass from passwords"
 	row := store.DB.QueryRow(q)
 

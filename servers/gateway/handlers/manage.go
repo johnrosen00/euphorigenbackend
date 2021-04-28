@@ -48,6 +48,15 @@ func (cx *HandlerContext) GamePassHandler(w http.ResponseWriter, r *http.Request
 				http.Error(w, "Database error.", http.StatusInternalServerError)
 			}
 		}
+
+		enc := json.NewEncoder(w)
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		if err3 := enc.Encode(newpass); err3 != nil {
+			http.Error(w, "Unable to encode to JSON", 404)
+		}
+
 	} else if r.Method == "GET" {
 		t, nt, err := cx.GamePassStore.Get()
 		if err != nil {
