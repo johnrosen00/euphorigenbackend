@@ -79,21 +79,21 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		}
 
 		beginTime := r.FormValue("begintime")
-		time, err := time.Parse(time.RFC3339, beginTime)
+		t, err := time.Parse(time.RFC3339, beginTime)
 		defaultTime := time.Time{}
 		if err != nil {
 			mr.BeginTime = defaultTime
 		} else {
-			mr.BeginTime = time
+			mr.BeginTime = t
 		}
 
 		endTime := r.FormValue("endtime")
-		time, err = time.Parse(time.RFC3339, endTime)
+		t, err = time.Parse(time.RFC3339, endTime)
 
 		if err != nil {
 			mr.EndTime = defaultTime
 		} else {
-			mr.EndTime = time
+			mr.EndTime = t
 		}
 
 		ret, err := cx.MetricStore.Get(mr)
