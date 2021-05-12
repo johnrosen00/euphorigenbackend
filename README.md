@@ -1,4 +1,3 @@
-# TODO:
+# Euphorigen Backend:
 
-1. DEBUG IN PROGRESS
-2. DEPLOY
+Documentation coming soon.
