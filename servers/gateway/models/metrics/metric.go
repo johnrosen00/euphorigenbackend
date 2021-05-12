@@ -12,11 +12,9 @@ type Metric struct {
 	Info          string    `json:"info"`
 }
 
-//MetricRequest contains the parameters to GET many metrics
 type MetricRequest struct {
-	PlayerID   int64     `json:"playerid,omitempty"`
 	MetricType string    `json:"metrictype,omitempty"`
+	PuzzleID   int64     `json:"puzzleid"`
 	BeginTime  time.Time `json:"begintime,omitempty"`
 	EndTime    time.Time `json:"endtime,omitempty"`
-	Info       string    `json:"info,omitempty"`
-} //don't know what other info should be capable of being retrieved?
+}

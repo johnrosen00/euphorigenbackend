@@ -50,12 +50,6 @@ func (store *MetricStore) Get(mr *MetricRequest) ([]*Metric, error) {
 			return nil, err
 		}
 
-		if mr.PlayerID > 0 {
-			if m.PlayerID != mr.PlayerID {
-				continue
-			}
-		}
-
 		if mr.BeginTime != defaultTime && mr.EndTime != defaultTime {
 			if m.TimeInitiated.Before(mr.EndTime) && m.TimeInitiated.After(mr.BeginTime) {
 				//do nothing
@@ -77,6 +71,12 @@ func (store *MetricStore) Get(mr *MetricRequest) ([]*Metric, error) {
 
 		if mr.MetricType != "" {
 			if m.MetricType != mr.MetricType {
+				continue
+			}
+		}
+
+		if mr.PuzzleID > 0 {
+			if mr.PuzzleID != m.PuzzleID {
 				continue
 			}
 		}

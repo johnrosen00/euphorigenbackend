@@ -6,6 +6,7 @@ import (
 	"euphorigenbackend/servers/gateway/models/players"
 	"euphorigenbackend/servers/gateway/sessions"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -66,10 +67,33 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		//Get player metrics based on some params
 
 		mr := &metrics.MetricRequest{}
-		d := json.NewDecoder(r.Body)
-		if err := d.Decode(mr); err != nil {
-			http.Error(w, "Bad JSON body", http.StatusUnsupportedMediaType)
-			return
+		mr.MetricType = r.FormValue("metrictype")
+
+		puzzleParam := r.FormValue("puzzleid")
+
+		if puzzleParam == "" {
+			mr.PuzzleID = 0
+		} else {
+			puzzle, _ := strconv.Atoi(puzzleParam)
+			mr.PuzzleID = int64(puzzle)
+		}
+
+		beginTime := r.FormValue("begintime")
+		time, err := time.Parse(time.RFC3339, beginTime)
+		defaultTime := time.Time{}
+		if err != nil {
+			mr.BeginTime = defaultTime
+		} else {
+			mr.BeginTime = time
+		}
+
+		endTime := r.FormValue("endtime")
+		time, err = time.Parse(time.RFC3339, endTime)
+
+		if err != nil {
+			mr.EndTime = defaultTime
+		} else {
+			mr.EndTime = time
 		}
 
 		ret, err := cx.MetricStore.Get(mr)
