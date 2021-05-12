@@ -19,10 +19,6 @@ type NewMetric struct {
 //MetricHandler handles the storage and retrieval of user metrics:
 //POST
 func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsJSONctype(r) {
-		http.Error(w, "Request body must contain JSON.", http.StatusUnsupportedMediaType)
-		return
-	}
 
 	currentSessionState := &SessionState{}
 	if _, errGetSession := sessions.GetState(r, cx.Key, cx.SessionStore, currentSessionState); errGetSession != nil {
@@ -32,6 +28,10 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 	currentplayerid := currentSessionState.PlayerSessionID
 
 	if r.Method == "POST" && currentplayerid > 0 {
+		if !IsJSONctype(r) {
+			http.Error(w, "Request body must contain JSON.", http.StatusUnsupportedMediaType)
+			return
+		}
 		//Post a new metric
 		nm := &NewMetric{}
 
@@ -111,6 +111,10 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, "Unable to encode to JSON", 404)
 		}
 	} else if r.Method == "PATCH" && currentplayerid > 0 {
+		if !IsJSONctype(r) {
+			http.Error(w, "Request body must contain JSON.", http.StatusUnsupportedMediaType)
+			return
+		}
 		//get the request body
 		playerupdate := &players.Player{}
 		d := json.NewDecoder(r.Body)
