@@ -48,8 +48,7 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		m.MetricType = nm.MetricType
 		m.MetricID = 0
 		m.PuzzleID = nm.PuzzleID
-		m.TimeInitiated = time.Now().Format(time.RFC3339)
-
+		m.TimeInitiated = time.Now()
 		ret, err := cx.MetricStore.Insert(m)
 
 		if err != nil {
@@ -103,7 +102,7 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		ret, err := cx.MetricStore.Get(mr)
 
 		if err != nil {
-			http.Error(w, "Error with metric params", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		w.Header().Add("Content-Type", "application/json")

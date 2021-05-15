@@ -35,28 +35,26 @@ func (store *MetricStore) Insert(m *Metric) (*Metric, error) {
 
 //Get events based on MetricRequest params
 func (store *MetricStore) Get(mr *MetricRequest) ([]*Metric, error) {
-	fmt.Printf("made it here pt 1")
+
 	q := "select metricid, playerid, puzzleid, timeinitiated, metrictype, info from metrics"
 	rows, err := store.DB.Query(q)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("made it here pt 2")
-
-	var metricSlice []*Metric
-	var m *Metric
 	defaultTime := time.Time{}
 
+	metricSlice := make([]*Metric, 0)
+
 	for rows.Next() {
+		m := &Metric{}
 		err := rows.Scan(&m.MetricID, &m.PlayerID, &m.PuzzleID, &m.TimeInitiated, &m.MetricType, &m.Info)
 		if err != nil {
 			return nil, err
 		}
-		timeInitiated, _ := time.Parse(time.RFC3339, m.TimeInitiated)
 
 		if mr.BeginTime != defaultTime && mr.EndTime != defaultTime {
-			if timeInitiated.Before(mr.EndTime) && timeInitiated.After(mr.BeginTime) {
+			if m.TimeInitiated.Before(mr.EndTime) && m.TimeInitiated.After(mr.BeginTime) {
 				if mr.EndTime.Before(mr.BeginTime) {
 					continue
 				}
@@ -64,12 +62,12 @@ func (store *MetricStore) Get(mr *MetricRequest) ([]*Metric, error) {
 				continue
 			}
 		} else if mr.BeginTime != defaultTime {
-			if !timeInitiated.After(mr.BeginTime) {
+			if !m.TimeInitiated.After(mr.BeginTime) {
 				continue
 			}
 
 		} else if mr.EndTime != defaultTime {
-			if !timeInitiated.Before(mr.EndTime) {
+			if !m.TimeInitiated.Before(mr.EndTime) {
 				continue
 			}
 		}
@@ -88,8 +86,6 @@ func (store *MetricStore) Get(mr *MetricRequest) ([]*Metric, error) {
 
 		metricSlice = append(metricSlice, m)
 	}
-
-	fmt.Printf("made it here pt 3")
 
 	return metricSlice, nil
 }
