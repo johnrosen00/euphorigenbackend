@@ -48,7 +48,7 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		m.MetricType = nm.MetricType
 		m.MetricID = 0
 		m.PuzzleID = nm.PuzzleID
-		m.TimeInitiated = time.Now()
+		m.TimeInitiated = time.Now().Format(time.RFC3339)
 
 		ret, err := cx.MetricStore.Insert(m)
 
@@ -74,8 +74,12 @@ func (cx *HandlerContext) MetricHandler(w http.ResponseWriter, r *http.Request) 
 		if puzzleParam == "" {
 			mr.PuzzleID = 0
 		} else {
-			puzzle, _ := strconv.Atoi(puzzleParam)
-			mr.PuzzleID = int64(puzzle)
+			puzzle, err := strconv.Atoi(puzzleParam)
+			if err != nil {
+				mr.PuzzleID = 0
+			} else {
+				mr.PuzzleID = int64(puzzle)
+			}
 		}
 
 		beginTime := r.FormValue("begintime")

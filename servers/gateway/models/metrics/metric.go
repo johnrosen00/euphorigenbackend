@@ -4,12 +4,12 @@ import "time"
 
 //Metric is a single metric
 type Metric struct {
-	MetricID      int64     `json:"metricid"`
-	PlayerID      int64     `json:"playerid"`
-	PuzzleID      int64     `json:"puzzleid"`
-	TimeInitiated time.Time `json:"timeinitiated"`
-	MetricType    string    `json:"metrictype"`
-	Info          string    `json:"info"`
+	MetricID      int64  `json:"metricid"`
+	PlayerID      int64  `json:"playerid"`
+	PuzzleID      int64  `json:"puzzleid"`
+	TimeInitiated string `json:"timeinitiated"`
+	MetricType    string `json:"metrictype"`
+	Info          string `json:"info"`
 }
 
 type MetricRequest struct {
