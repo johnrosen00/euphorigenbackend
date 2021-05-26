@@ -45,3 +45,7 @@ To contact us about code and other information:
 * John Rosen- rosenji@uw.edu
 * Darren Ma - dma150@uw.edu
 * Jeffrey Wang - jw21@uw.edu
+
+Website's:
+* Main: https://www.lokisloop.org/
+* Test: https://cranky-wozniak-cb5f42.netlify.app/
